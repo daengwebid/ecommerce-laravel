@@ -25,6 +25,7 @@ class CreateOrdersTable extends Migration
             $table->text('catatan')->nullable();
             $table->string('status_order');
             $table->text('catatan_status');
+            $table->string('no_resi');
             $table->timestamps();
         });
     }

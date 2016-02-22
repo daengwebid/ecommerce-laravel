@@ -14,12 +14,13 @@ class CreatePaidsTable extends Migration
     {
         Schema::create('paids', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('invoice');
+            $table->string('invoice')->unique();
             $table->string('nama_pemilik');
             $table->string('bank_from');
             $table->string('no_rekening');
             $table->string('bank_to');
             $table->integer('jumlah');
+            $table->string('bukti_transfer');
             $table->timestamps();
         });
     }

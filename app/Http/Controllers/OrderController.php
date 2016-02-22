@@ -45,7 +45,8 @@ class OrderController extends Controller
 
         Order::where('invoice', '=', $request->invoice)->update([
             'status_order'  => $request->status_order,
-            'catatan_status'=> $request->input('catatan_status')
+            'catatan_status'=> $request->input('catatan_status'),
+            'no_resi'       => $request->input('no_resi')
         ]);
 
         return redirect('/dw-admin/order/' . $request->invoice);

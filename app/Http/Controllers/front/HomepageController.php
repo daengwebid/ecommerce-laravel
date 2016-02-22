@@ -13,6 +13,11 @@ use App\Supplier;
 use Cart;
 use Response;
 use RajaOngkir;
+use App\Order;
+use App\Bank;
+use App\Paid;
+use App\Testimoni;
+use App\Page;
 
 class HomepageController extends Controller
 {
@@ -22,10 +27,14 @@ class HomepageController extends Controller
         $pengaturan = Setting::find(1);
         $product = Product::orderBy('created_at', 'desc')->with('media_image', 'category')->take(8)->paginate(8);
         $kategori = Category::all();
+        $testimoni = Testimoni::where('status', '=', 1)->orderBy('created_at', 'desc')->take(10)->get();
+        $bank = Bank::all();
         return view('front.index', [
             'pengaturan'    => $pengaturan,
             'product'       => $product,
-            'kategori'      => $kategori
+            'kategori'      => $kategori,
+            'testimoni'     => $testimoni,
+            'bank'          => $bank
             ]);
     }
 
@@ -84,12 +93,16 @@ class HomepageController extends Controller
         $pengaturan = Setting::find(1);
         $product = Product::where('kategori_id', '=', $data_slug_kategori->id)->orderBy('created_at', 'desc')->with('media_image', 'category')->paginate(8);
         $kategori = Category::all();
+        $testimoni = Testimoni::where('status', '=', 1)->orderBy('created_at', 'desc')->take(10)->get();
+        $bank = Bank::all();
 
         return view('front.kategori', [
             'pengaturan'    => $pengaturan,
             'product'       => $product,
             'kategori'      => $kategori,
-            'head'          => $data_slug_kategori
+            'head'          => $data_slug_kategori,
+            'testimoni'     => $testimoni,
+            'bank'          => $bank
             ]);
     }
     
@@ -98,10 +111,14 @@ class HomepageController extends Controller
         $pengaturan = Setting::find(1);
         $product = Product::where('slug', '=', $id)->with('media_image', 'category')->first();
         $kategori = Category::all();
+        $testimoni = Testimoni::where('status', '=', 1)->orderBy('created_at', 'desc')->take(10)->get();
+        $bank = Bank::all();
         return view('front.produk', [
             'pengaturan'    => $pengaturan,
             'product'       => $product,
-            'kategori'      => $kategori
+            'kategori'      => $kategori,
+            'testimoni'     => $testimoni,
+            'bank'          => $bank
             ]);
     }
 
@@ -172,6 +189,76 @@ class HomepageController extends Controller
             ];
         }
         return Response::json($hitung);
+    }
+
+    public function ConfirmPembayaran()
+    {
+        $pengaturan = Setting::findOrFail(1);
+        $kategori = Category::all();
+        $bank = Bank::all();
+        $testimoni = Testimoni::where('status', '=', 1)->orderBy('created_at', 'desc')->take(10)->get();
+        return view('front.pembayaran', [
+            'pengaturan'    => $pengaturan,
+            'kategori'      => $kategori,
+            'bank'          => $bank,
+            'testimoni'     => $testimoni,
+            'bank'          => $bank
+        ]);
+    }
+
+    public function cekInvoice(Request $request)
+    {
+        $invoice = $request->input('invoice');
+        $dataInvoice = Order::where('invoice', '=', $invoice)->first();
+        $pesan = $dataInvoice == "" ? '0':'1';
+        return response()->json([
+                'pesan'=>$pesan
+                ]);
+    }
+
+    public function simpanInvoice(Request $request)
+    {
+        $this->validate($request, [
+            'invoice'       => 'bail|request|unique:paids',
+            'nama_pemilik'  => 'required',
+            'bank_from'     => 'required',
+            'no_rekening'   => 'required',
+            'bank_to'       => 'required',
+            'jumlah'        => 'required',
+            'bukti_transfer'=> 'required'
+        ]);
+
+        if ($request->hasFile('bukti_transfer')) {
+            $file = $request->file('bukti_transfer');
+            $filename = str_random(6) . "." . $file->getClientOriginalExtension();
+            $path = public_path() . '/upload/bukti';
+            $paid = Paid::create($request->all());
+            $file->move($path, $filename);
+        }
+
+        if (!empty($paid->id)) {
+            $order = Order::where('invoice', '=', $paid->invoice)->first();
+            $order->update(['paid_id' => $paid->id]);
+        }
+
+        return redirect('/konfirmas-pembayaran')->with('status', 'Konfirmasi Pembayaran Sukses');
+    }
+
+    public function frontPage($slug)
+    {
+        $pengaturan = Setting::findOrFail(1);
+        $kategori = Category::all();
+        $testimoni = Testimoni::where('status', '=', 1)->orderBy('created_at', 'desc')->take(10)->get();
+        $bank = Bank::all();
+        $page = Page::where('slug', '=', $slug)->first();
+
+        return view('front.page', [
+            'pengaturan'    => $pengaturan,
+            'page'          => $page,
+            'kategori'      => $kategori,
+            'testimoni'     => $testimoni,
+            'bank'          => $bank
+        ]);
     }
     
 }

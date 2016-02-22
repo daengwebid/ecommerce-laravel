@@ -1,7 +1,7 @@
 @extends('layouts.front')
 
 @section('title')
-    <title>{{ $pengaturan->nama_toko }}</title>
+    <title>Toko Fashion Online Indonesia | {{ $pengaturan->nama_toko }}</title>
     <meta name="csrf_token" content="{{ csrf_token() }}" />
 @endsection
 @section('content')
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="breadcrumbs">
                 <ol class="breadcrumb">
-                    <li><a href="{{ url('') }}"><i class="fa fa-home"></i></a></li>
+                    <li><a href="{{ url('/') }}"><i class="fa fa-home"></i></a></li>
                     <li class="active">Home</li>
                 </ol>
             </div>
@@ -19,25 +19,7 @@
     
     <div class="row" id="content">
         <div class="col-md-3">
-            <div class="panel panel-primary">
-                <div class="panel-heading">KATEGORI</div>
-                    <div class="panel-body">
-                        <ul class="nav">
-                            @foreach ($kategori as $k)
-                                <li><a href="{{ url('/kategori/' . $k->slug) }}" class="text-capitalize"> {{ $k->nama_kategori }} <span class="fa fa-arrow-circle-right pull-right"></span></a></li>
-                            @endforeach
-                        </ul>
-                    </div>
-            </div>
-
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">PAYMENT METHOD</h3>
-                </div>
-                <div class="panel-body">
-                    Panel content
-                </div>
-            </div>
+            @include('includes.sidebar')
         </div>
 
         <div class="col-md-9">
@@ -71,45 +53,47 @@
             </div>
 
             <div class="row">
-                <div class="panel panel-primary">
-                    <div class="panel-heading text-center">KOLEKSI TERBARU</div>
-                        <div class="panel-body">
-                            @foreach ($product as $p)
-                                @if ($p->publish == 1)
-                                <div class="col-md-3">
-                                    <div class="thumbnail img-responsive">
-                                        @if ($p->media_image_id != null)
-                                            <a href="{{ url('/produk/' . $p->slug) }}"><img src="{{ asset('upload/img/' . $p->media_image->name_photo) }}" alt="{{ $p->nama_produk }}" style="min-height:50px; height:250px; min-width:50px; width: 150px;" class="morph"></a>
-                                        @else
-                                            <a href="{{ url('/produk/' . $p->slug) }}"><img src="{{ asset('img/not-available.jpg') }}" alt="{{ $p->nama_produk }}" style="min-height:50px; height:250px; min-width:50px; width: 150px;" class="morph"></a>
-                                        @endif
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <p class="text-uppercase text-center">
-                                                    <a href="{{ url('/produk/' . $p->slug) }}">{{ str_limit($p->nama_produk, 15) }}</a>
-                                                </p>
-                                                <p class="text-center text-uppercase">({{ $p->kode_produk }})</p>
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center">KOLEKSI TERBARU</div>
+                            <div class="panel-body">
+                                @foreach ($product as $p)
+                                    @if ($p->publish == 1)
+                                    <div class="col-md-3">
+                                        <div class="thumbnail img-responsive">
+                                            @if ($p->media_image_id != null)
+                                                <a href="{{ url('/produk/' . $p->slug) }}"><img src="{{ asset('upload/img/' . $p->media_image->name_photo) }}" alt="{{ $p->nama_produk }}" style="min-height:50px; height:250px; min-width:50px; width: 150px;" class="morph"></a>
+                                            @else
+                                                <a href="{{ url('/produk/' . $p->slug) }}"><img src="{{ asset('img/not-available.jpg') }}" alt="{{ $p->nama_produk }}" style="min-height:50px; height:250px; min-width:50px; width: 150px;" class="morph"></a>
+                                            @endif
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p class="text-uppercase text-center">
+                                                        <a href="{{ url('/produk/' . $p->slug) }}">{{ str_limit($p->nama_produk, 15) }}</a>
+                                                    </p>
+                                                    <p class="text-center text-uppercase">({{ $p->kode_produk }})</p>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <p class="text-center harga">Rp. {{ $p->harga_jual }} @if ($p->diskon != 0)<sup><s>{{ $p->harga }}</s></sup>@endif</p>
+                                                </div>
+                                                <div class="col-md-12 text-center">
+                                                    {!! Form::open(array('url' => '/cart', 'class' => 'form_submit')) !!}
+                                                        <a href=""><button class="btn btn-default btn-sm">Detail</button></a>
+                                                        <button type="submit" class="btn btn-success btn-sm" id="beli"><i class="fa fa-shopping-cart"></i> Beli</button>
+                                                        <input type="hidden" name="kode_produk" id="kode_produk" value="{{ $p->kode_produk }}">
+                                                    {!! Form::close() !!}
+                                                </div>
                                             </div>
-                                            <div class="col-md-12">
-                                                <p class="text-center harga">Rp. {{ $p->harga_jual }} @if ($p->diskon != 0)<sup><s>{{ $p->harga }}</s></sup>@endif</p>
-                                            </div>
-                                            <div class="col-md-12 text-center">
-                                                {!! Form::open(array('url' => '/cart', 'class' => 'form_submit')) !!}
-                                                    <a href=""><button class="btn btn-default btn-sm">Detail</button></a>
-                                                    <button type="submit" class="btn btn-success btn-sm" id="beli"><i class="fa fa-shopping-cart"></i> Beli</button>
-                                                    <input type="hidden" name="kode_produk" id="kode_produk" value="{{ $p->kode_produk }}">
-                                                {!! Form::close() !!}
-                                            </div>
+                                            
                                         </div>
-                                        
                                     </div>
-                                </div>
-                                @endif
-                            @endforeach
-                        </div>
-                        <div class="text-center"> 
-                            {{ $product->links() }}
+                                    @endif
+                                @endforeach
+                            </div>
+                            <div class="text-center"> 
+                                {{ $product->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

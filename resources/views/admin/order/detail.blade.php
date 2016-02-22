@@ -196,6 +196,8 @@
         			<option value="Pending">Pending</option>
         			<option value="Batal">Batal</option>
         		</select>
+        		<label>No Resi</label>
+        		{!! Form::text('no_resi', null, ['class' => 'form-control', 'id' => 'no_resi', 'placeholder' => 'Masukkan No Resi']) !!}
         		<label>Catatan</label>
         		{!! Form::textarea('catatan_status', null, ['class' => 'form-control', 'placeholder' => 'Catatan Order', 'cols' => '50', 'rows' => '5']) !!}
         		{!! Form::hidden('invoice', $order->invoice, ['class' => 'form-control', 'readonly' => 'readonly']) !!}

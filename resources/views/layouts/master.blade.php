@@ -222,6 +222,18 @@
               </a>
             </li>
             <li class="treeview">
+              <a href="{{ url('/dw-admin/pages') }}">
+                <i class="glyphicon glyphicon-th-large"></i>
+                <span>Pages</span>
+              </a>
+            </li>
+            <li class="treeview">
+              <a href="{{ url('/dw-admin/testimoni') }}">
+                <i class="glyphicon glyphicon-grain"></i>
+                <span>Testimoni</span>
+              </a>
+            </li>
+            <li class="treeview">
               <a href="#">
                 <i class="glyphicon glyphicon-cog"></i>
                 <span>Setting</span>
@@ -232,6 +244,7 @@
                 <li><a href="{{ url('/dw-admin/payment') }}"><i class="fa fa-circle-o"></i> Payment Method</a></li>
               </ul>
             </li>
+
             
             <li class="header">LABELS</li>
             <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>

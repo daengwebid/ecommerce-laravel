@@ -31,6 +31,17 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/cart', 'front\HomepageController@proses_cart');
     Route::get('/d_cart', 'front\HomepageController@delete_cart');
 
+    //Pembayaran
+    Route::get('/konfirmasi-pembayaran', 'front\HomepageController@ConfirmPembayaran');
+    Route::post('/cek-invoice', ['as' => 'pembayaran.cekinvoice', 'uses' => 'front\HomepageController@cekInvoice']);
+
+    //Testimoni
+    Route::get('/testimoni', 'TestimoniController@isiTestimoni');
+    Route::post('/testimoni', 'TestimoniController@createTestimoni');
+
+    //Page
+    Route::get('/p/{slug}', 'front\HomepageController@frontPage');
+
     //category 
     Route::get('/kategori/{slug}', 'front\HomepageController@kategori');
     //Product Detail
@@ -86,5 +97,24 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/dw-admin/slide', ['as' => 'slide.index', 'uses' => 'SlideController@index']);
     Route::post('/dw-admin/slide', ['as' => 'slide.create', 'uses' => 'SlideController@create']);
     Route::delete('/dw-admin/slide/{id}', ['as' => 'slide.destroy', 'uses' => 'SlideController@destroy']);
+
+    //Route Pages
+    Route::get('/dw-admin/pages', ['as' => 'pages.index', 'uses' => 'PageController@index']);
+    Route::get('/dw-admin/pages/create', ['as' => 'pages.create', 'uses' => 'PageController@create']);
+    Route::post('/dw-admin/pages/create', ['as' => 'pages.store', 'uses' => 'PageController@store']);
+    Route::delete('/dw-admin/pages/{id}', ['as' => 'page.delete', 'uses' => 'PageController@destroy']);
+    Route::get('/dw-admin/pages/{id}/edit', ['as' => 'page.edit', 'uses' => 'PageController@edit']);
+    Route::put('/dw-admin/pages/{id}', ['as' => 'page.update', 'uses' => 'PageController@update']);
+
+    //Route Bank
+    Route::get('/dw-admin/payment', ['as' => 'payment.index', 'uses' => 'BankController@index']);
+    Route::post('/dw-admin/payment', ['as' => 'payment.store', 'uses' => 'BankController@store']);
+    Route::delete('/dw-admin/payment/{id}', ['as' => 'payment.destroy', 'uses' => 'BankController@destroy']);
+
+    //Route Testimoni
+    Route::get('/dw-admin/testimoni', ['as' => 'testimoni.index', 'uses' => 'TestimoniController@index']);
+    Route::get('/dw-admin/testimoni/{id}/edit', ['as' => 'testimoni.edit', 'uses' => 'TestimoniController@edit']);
+    Route::put('/dw-admin/testimoni/{id}', ['as' => 'testimoni.update', 'uses' => 'TestimoniController@update']);
+    Route::delete('/dw-admin/testimoni/{id}', ['as' => 'testimoni.destroy', 'uses' => 'TestimoniController@destroy']);
 
 });
